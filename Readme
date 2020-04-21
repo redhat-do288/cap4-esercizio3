@@ -1,0 +1,25 @@
+
+SETUP
+docker pull registry.redhat.io/redhat-openjdk-18/openjdk18-openshift
+oc new-project post-commit
+oc import-image openjdk18-openshift --confirm --insecure --from=localhost:5000/openjdk18-openshift
+oc new-app openjdk18-openshift~https://github.com/redhat-do288/builds-for-manager.git --name builds-for-managers
+oc expose svc/builds-for-managers
+test -> curl http://builds-for-managers-myproject.127.0.0.1.nip.io/HelloWorldExample/hello/1 per 200 per 400 togliere 1 (non funziona all'interno del pod di build,connessione rifiutata)
+										
+
+TASK
+deploy app
+	name hook
+	image stream->php
+	repository->https://github.com/redhat-do288/php-serverhost.git
+aggiungere build-hook all'app hook (curl http://XXXX:8080/HelloWorldExample/hello/{TEST})
+avviare build app hook e verificare fallimento build
+aggiungere build-hook all'app hook (curl http://XXXX:8080/HelloWorldExample/hello/{TEST})
+configurare variabile d'ambiente TEST per la bc/hook
+
+XXX->BUILDS_FOR_MANAGERS_IP (Sostituito al alla route builds-for-managers-myproject.127.0.0.1.nip.io per la quale dal builder pod si ottiene connessione rifiutata. TODO verificare!!!!) 
+
+	
+	
+
